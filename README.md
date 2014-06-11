@@ -1,4 +1,0 @@
-EasyGiftApp
-===========
-
-Senior Project Application
