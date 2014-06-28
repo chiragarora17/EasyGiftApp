@@ -1,5 +1,5 @@
 class HomeController < ApplicationController
-	#before_filter :authenticate_user!
+	before_filter :authenticate_user!, :except => [:index]
 
 	def index
 
@@ -9,11 +9,14 @@ class HomeController < ApplicationController
 
 	end
 
-	def profile
+	def userhome
 
 	end
 
-	def userhome
+	def account_settings
+	end
+
+	def profile
 
 	end
 end

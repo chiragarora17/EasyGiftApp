@@ -21,3 +21,14 @@ border-style:solid;
 border-color:#ffffff;
 background-color: #2B3856;
 }
+.inline
+{
+  display: inline;
+}
+
+.profile
+{
+
+	border-bottom: solid 1px #000000 ;
+}
+

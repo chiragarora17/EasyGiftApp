@@ -24,6 +24,9 @@ class User < ActiveRecord::Base
   has_many :likes, :dependent => :destroy
   has_many :comments, :dependent => :destroy
 
+  has_many :user_notifications
+  has_many :notifications, :through => :user_notifications
+
   def apply_omniauth(omniauth)
     authentications.build(:provider => omniauth['provider'], :uid => omniauth['uid'])
   end
@@ -38,6 +41,10 @@ class User < ActiveRecord::Base
 
   def unfollow!(other_user)
     relationships.find_by_followed_id(other_user.id).destroy
+  end
+
+  def activity
+    Notification.where(actor_id: self.id)
   end
 
 end

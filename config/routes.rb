@@ -4,6 +4,7 @@ EasyGift::Application.routes.draw do
   root :to => 'home#index'
   match 'testpage' => 'home#test'
 
+  match 'account_settings' => 'home#account_settings'
   match 'profile'   => 'home#profile'
 
   match 'likes/create' => 'likes#create', :via => [:post]
@@ -17,13 +18,26 @@ EasyGift::Application.routes.draw do
   match 'auth/:provider/callback' => 'authentications#create'
   match 'users/update_password' => 'users#update_password'
   match 'users/generate_new_password_email' => 'users#generate_new_password_email'
-  post 'gift_requests/:id' => 'comments#create'
+  post 'comments' => 'comments#create'
   match 'userhome' => 'home#userhome'
+  match 'gift_requests/searchresult' => 'gift_requests#gift_request_search', :via => [:post]
+  match 'tags/tag_search' => 'tags#tag_search', :via => [:post]
+  # match '/helloworld' => 'home#hello_world'
+  #get 'gift_requests/searchresult' => 'gift_requests#tag_search'
+
   # gift request  match 'gift_requests/:id' => 'comments#create', :via => [:post]
-  
+
+
   resources :gift_requests do
     get :autocomplete_gift_request_title, :on => :collection
+    get :autocomplete_tag_name, :on => :collection
   end
+
+  resources :tags, only: [:index, :create, :show]
+
+  post '/gift_requests/autocomplete_tag_name'
+  post '/tags/create'
+
   # match 'gift_requests/autocomplete_gift_request_title'
 
   # The priority is based upon order of creation:
