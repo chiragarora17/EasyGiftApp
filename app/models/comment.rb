@@ -7,14 +7,25 @@ class Comment < ActiveRecord::Base
 
   validates_presence_of :user_id
   validates_presence_of :description
+  validates_presence_of :user
+  validates_presence_of :gift_request
 
   validate :one_final_answer, :if => :final_answer_changed?
+
+  after_create :create_notification
+
+  def create_notification
+    Notification.create_notification(self, "comment")
+  end
 
   def one_final_answer
     if Comment.where(gift_request_id: gift_request.id, final_answer: true).count > 0
       errors[:base ] << "A gift request cannot have more than one final answer"
+    else
+      newpoints = user.points + 500
+      user.update_attributes(points: newpoints)
+      create_final_answer_notifications
     end
-    create_final_answer_notifications
   end
 
   def username
@@ -32,6 +43,7 @@ class Comment < ActiveRecord::Base
   private
 
   def create_final_answer_notifications
-    Notification.create_final_answer_notifications(self)
+    Notification.create_notification(self, "final_answer_selected")
+    Notification.create_notification(self, "final_answer_selection")
   end
 end

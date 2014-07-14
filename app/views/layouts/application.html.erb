@@ -8,10 +8,25 @@
   .inline{
    display: inline;
   }
-
-.navbar-static-top {
-  margin-top: -3%;
+.new_notification{
+  background-color:#98AFC7;
 }
+
+.footer {
+  height: 100px; 
+  width:100%;
+  left: 0;
+  bottom: 0; 
+}
+
+span.glyphicon-globe {
+    font-size: 1.2em;
+}
+
+.dropdown-menu {
+  width: 100%; 
+}
+
 
 body{
   background-color: #008080;
@@ -25,99 +40,92 @@ body{
     overflow-y: scroll;
   }
 }
-.container {
-    /*width: 1024px;*/
-    display: block;
-}
 
   </style>
   <title><%= yield(:title) %></title>
   <!-- Additional header tags here -->
+  <%= csrf_meta_tag %>
   <%= stylesheet_link_tag    "application", :media => "all" %>
-  <%= javascript_include_tag "application" %>
+  <%= javascript_include_tag "application"  %>
 <script src="//js.pusher.com/2.2/pusher.min.js" type="text/javascript"></script>
-  <%= csrf_meta_tags %>
 </head>
 <body>
 
+    <div id="facebook_login_url" data-url="<%= ENV['FACEBOOK_LOGIN_URL'] %>"></div>
+
     <!-- Fixed navbar -->
-    <div class="navbar navbar-inverse navbar-static-top" role="navigation">
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation" style="background:#000000;">
       <div class="container">
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse" style="float:left">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          
-          <%= image_tag 'tiffany.png', :alt => 'lgo', width:"50", height:"50", class: "inline" %>
-          <a class="inline" href="#"><h4 class="inline" style="color:#ffffff;">Easy Gifts</h4></a>
-        
+          <div style="padding-top:3px; padding-bottom:3px">
+          <a class="inline" href="/profile" style="background-color:transparent;"><%= image_tag 'EasyGifts.png', :alt => 'lgo', width:"170", height:"80", class: "inline" %>
+          </a>
+          </div>
         </div>
         <div id="user_navigation_bar" <% if current_user %> data-user-id=<%= current_user.id %> <% end %> class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li class="divider"></li>
-                <li class="dropdown-header">Nav header</li>
-                <li><a href="#">Separated link</a></li>
-                <li><a href="#">One more separated link</a></li>
-              </ul>
-            </li>
+            <form class="navbar-form navbar-left" role="search" style="padding-left:140px; padding-top:20px" action="/gift_requests/searchresult" method = "post">
+                  <div class="form-group" style="">
+                    <input type="text" id="giftrequestsearch" name="keyword" style="height: 28px; font-size: 12px;line-height: 12px; width: 300px" class="form-control" placeholder="Search">
+                  </div>
+                  <input type="submit" class="btn btn-default" style="height: 28px; font-size: 12px;line-height: 12px; width: 90px"value="Submit">
+                </form>
+          <ul class="nav navbar-nav navbar-right" style="padding-top:10px;">
+        <% if current_user %>
+          <li id="user_notification_dropdown"> <a href="#" style= "background-color:transparent; color:white;" class="dropdown-toggle"  id="clickable" data-toggle="dropdown">
+              <% @count = current_user.user_notifications.where(read: false).count %>
+            <h4><span class="glyphicon glyphicon-globe"><span id="navigation_count" data-count=<%= @count %> class="badge" style="background-color:red;"><% if @count > 0 %><%= @count %> <% end %></span></span> </h4>
+          </a>
+          <ul id="user_notification_ul" class="dropdown-menu" style=" margin-top:1px; width: 400px;overflow: auto; height: 500px" role="menu" id="notify" align="center" >
+                                  <% @notifications = current_user.user_notifications.order("notification_id desc") %>
+                    <% @notifications.each do |notification| %>
+                    <% if !notification.read %>              
+                      <li data-id=<%= notification.id %> class="new_notification" ><%= link_to notification.message, notification.notification_link_to_url %></li><hr>
+                    <% else %>  
+                      <li data-id=<%= notification.id %> ><%= link_to notification.message, notification.notification_link_to_url %></li><hr>
+                    <% end %>
+              <% end %>
           </ul>
+          </li>
+        <% end %>
+        <li  style="color:#ffffff;padding-left:5px; padding-top:10px"><a href="/gift_requests" style= "background-color:transparent; color:white;">Home</a></li>
+        <li class="dropdown" style="padding-top:10px;padding-left:5px;">
+          <a href="#" class="dropdown-toggle" style= "background-color:transparent; color:white;" data-toggle="dropdown">Settings <span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu" style="margin-top:15px;">
+            <li ><a href="/account_settings" >Change Password</a></li>
+            <!-- <li class="divider"></li> -->
+          </ul>
+        </li>
+        <li style="padding-top:10px;padding-left:5px;"><a href="/users/sign_out" data-method="delete" style= "background-color:transparent; color:white;" rel="nofollow">Logout</a></li>
+      </ul>
         </div><!--/.nav-collapse -->
       </div>
     </div>
 
-    <h4>
-      <!-- <%= flash[:notice] if flash[:notice] %> 
-    -->
-    <% if flash[:notice] %>
-      <script type="text/javascript">
-      alert("<%= flash[:notice] if flash[:notice] %>");
-    </script>
-    <% end %>
-    </h4>
-<!--     <p class="notice"><%= notice %></p> -->
-    <p class="alert"><%= alert %></p>
-    <!-- <% if current_user %> -->
-    
-    <!-- <div class="inline" style="display:inline; margin-left:12em; height: 120; width: 100%"> -->
-      <!-- <%= image_tag 'giftbox.png', :alt => 'lgo', width:"100", height:"100" %> -->
-      <!-- <h3 class="inline" style="margin-left:1em;"> Easy Gifts</h3> -->
-    <!-- </div> -->
-
-    <!-- <%  end %> -->
-
-<%= yield %>
-</body>
-  
-      <footer  style = "background-color: #d4eaf4;">
-        <%= stylesheet_link_tag "footer" %>
-        <div id="footer"  style = "color: #000000;background-color: #d4eaf4;">
-      <div class="cc"  style = "color: #000000;background-color: #d4eaf4;">
-        <p class="muted credit">&#169; EasyGift Team 
-    </p>
-        <blockquote class="blockquote-reverse" style = "background-color: #d4eaf4;">
-                <ul class="list-inline">
-                <li><a href="#" style="color: #000000;">Help</a></li>
-                <li><a href="privacy" style="color: #000000;">Privacy</a></li>            
-                <li><a href="about"  style="color: #000000;">About</a></li>
-            </ul>
-
-      </blockquote>
-      </div>
+    <br>
+    <br>
+    <br>
+    <div align = "center">
+        <div class="inline">
+        <p id="flash_alert" style="color:red"><%= flash[:notice] if flash[:notice] %></p>
+        </div>
     </div>
   
-  </footer>
+   
+<%= yield %>
+
+</body>
 
 
+<div class="footer" align="center">
+      CopyRights @  
+      <a class="inline" style="background-color:transparent;"><%= image_tag 'EasyGiftsBlack.png', :alt => 'lgo', width:"150", height:"70", class: "inline" %></a>
+        -  
+      <a  href="/privacy_policy">Privacy Agreement</a>  
+    </div>
 </html>

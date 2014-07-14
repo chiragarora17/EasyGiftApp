@@ -2,6 +2,7 @@ $( document ).ready(function() {
 
 	var tags_on_page = [];
     
+
 	$('#add_tag_to_gift_request').click(function(e) {
 		e.preventDefault();
 		create_tag_and_associate_to_gift_request($('#autocomplete_tag').val());
@@ -18,11 +19,13 @@ $( document ).ready(function() {
 		remove_tag_from_page(tag_name, e);
 	});
 
+
 	function create_tag_and_associate_to_gift_request(tag_name) {
 		data = {}
 		tag = {}
 		tag['name'] = tag_name
 		data['tag'] = tag
+		data['authenticity_token'] = $('#new_gift_request_authenticity_token').val();
 	    $.ajax({
 		    type: "POST",
 		    dataType: 'json',
@@ -71,13 +74,14 @@ $( document ).ready(function() {
 		gift_request['public']= $('input[name=gift_request_public]:checked', '#new_gift_request_form').val()
 		data['gift_request'] = gift_request;
 		data['tags'] = tags_on_page;
+		data['authenticity_token'] = $('#new_gift_request_authenticity_token').val();
 	    $.ajax({
 		    type: "POST",
 		    dataType: 'json',
 		    url: "/gift_requests",
 		    data: data,
-		    success: function(response) {
-		    	window.location.replace('/gift_requests/' + response.id);
+		    success: function(gift_request) {
+				window.location.replace('/gift_requests/' + gift_request.id);
 		    },
 		    error: function(response) {
 		    	alert(response.responseText);
@@ -85,17 +89,31 @@ $( document ).ready(function() {
 	    });	
 	});
 
-    Pusher.log = function(message) {
-      if (window.console && window.console.log) {
-        window.console.log(message);
-      }
-    };
-
-    var pusher = new Pusher('ae0c513bd7bc7a412781');
-    var user_channel_name = 'user' + $('#user_navigation_bar').data('user-id') + '_channel';
-    var user_channel = pusher.subscribe(user_channel_name);
-    user_channel.bind('like_event', function(data) {
-      alert(data.message);
-    });
-
+	$('#edit_gift_request_button').click(function(e) {
+		
+		e.preventDefault();
+		data = {}
+		gift_request = {}
+		id = $('#id_token').val();
+		//gift_request['user_id'] = $('#new_gift_request_current_user_id').val();
+		gift_request['title'] = $('#new_gift_request_title').val();
+		gift_request['description'] = $('#new_gift_request_description').val();
+		//gift_request['public']= $('input[name=gift_request_public]:checked', '#new_gift_request_form').val()
+		data['id'] = id;
+		data['gift_request'] = gift_request;
+		data['authenticity_token'] = $('#new_gift_request_authenticity_token').val();
+		 //alert(gift_request);
+	    $.ajax({
+		    type: "PUT",
+		    dataType: 'json',
+		    url: "/gift_requests/"+data['id'],
+		    data: data,
+		    success: function(response) {
+		    	window.location.replace('/gift_requests/');
+		    },
+		    error: function(response) {
+		    	alert(response.responseText);
+		    }
+	    });	
+	});
 });

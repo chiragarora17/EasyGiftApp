@@ -1,19 +1,23 @@
 EasyGift::Application.routes.draw do
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
-  root :to => 'home#index'
+  root :to => 'home#profile'
   match 'testpage' => 'home#test'
+  match 'landing' => 'home#index'
 
   match 'account_settings' => 'home#account_settings'
   match 'profile'   => 'home#profile'
 
   match 'likes/create' => 'likes#create', :via => [:post]
   match 'comments/final' => 'comments#final', :via => [:post]
+  match '/user_notifications/create' => 'user_notifications#create'
 
 
   devise_for :users, :controllers => { :registrations => 'registrations' }
 
   # resources :authentications
+  match 'users' => 'users#index'
+  match 'users/:id' => 'users#show'
   match 'users/edit_password' => 'users#edit_password'
   match 'auth/:provider/callback' => 'authentications#create'
   match 'users/update_password' => 'users#update_password'
@@ -22,6 +26,8 @@ EasyGift::Application.routes.draw do
   match 'userhome' => 'home#userhome'
   match 'gift_requests/searchresult' => 'gift_requests#gift_request_search', :via => [:post]
   match 'tags/tag_search' => 'tags#tag_search', :via => [:post]
+  match 'comments/:id/:status' => 'comments#likes'
+  match '/privacy_policy' => 'home#privacy_policy'
   # match '/helloworld' => 'home#hello_world'
   #get 'gift_requests/searchresult' => 'gift_requests#tag_search'
 
@@ -37,7 +43,9 @@ EasyGift::Application.routes.draw do
 
   post '/gift_requests/autocomplete_tag_name'
   post '/tags/create'
+  post '/user_notifications/batch_read' => 'user_notifications#batch_read'
 
+  resources :users, only: [:index, :show]
   # match 'gift_requests/autocomplete_gift_request_title'
 
   # The priority is based upon order of creation:

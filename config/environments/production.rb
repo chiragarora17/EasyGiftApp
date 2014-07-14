@@ -15,10 +15,31 @@ EasyGift::Application.configure do
   config.assets.compress = true
 
   # Don't fallback to assets pipeline if a precompiled asset is missed
-  config.assets.compile = false
+  config.assets.compile = true
+
+  # fix
+  # config.serve_static_assets = false
+  # config.assets.compress = true
+  # config.assets.digest = true
+  # config.assets.compile = false
 
   # Generate digests for assets URLs
   config.assets.digest = true
+
+  config.action_mailer.default_url_options = { host: 'easy-gift.heroku.com' }
+
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    address:              'smtp.gmail.com',
+    port:                 587,
+    domain:               'gmail.com',
+    user_name:            'easygift195@gmail.com',
+    password:             'printery',
+    authentication:       'plain',
+    enable_starttls_auto: true  }
+  # config.assets.precompile += %w[*.png *.jpg *.jpeg *.gif *.css *.css.scss *.js *.js.coffee] 
+  # config.assets.precompile += %w[*.png *.jpg *.jpeg *.gif] 
+  # config.assets.initialize_on_precompile = false
 
   # Defaults to nil and saved in location specified by config.assets.prefix
   # config.assets.manifest = YOUR_PATH
@@ -54,6 +75,12 @@ EasyGift::Application.configure do
   # Enable threaded mode
   # config.threadsafe!
 
+  ENV['FACEBOOK_KEY'] = '563804037067616'
+  ENV['FACEBOOK_SECRET'] = '88b4d03810c510ced21861f2026fc68e'
+  ENV['FACEBOOK_LOGIN_URL'] = "http://easy-gift.herokuapp.com/auth/facebook"
+
+  ENV['HOMEPAGE_SIGN_IN'] = "http://easy-gift.herokuapp.com/"
+
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation can not be found)
   config.i18n.fallbacks = true
@@ -64,4 +91,16 @@ EasyGift::Application.configure do
   # Log the query plan for queries taking more than this (works
   # with SQLite, MySQL, and PostgreSQL)
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
+
+    # Compress JavaScripts and CSS
+    class NoCompression
+         def compress(string)
+             # do nothing
+             string
+         end
+     end
+
+     config.assets.compress = true
+     config.assets.js_compressor = NoCompression.new
+     config.assets.css_compressor = NoCompression.new
 end

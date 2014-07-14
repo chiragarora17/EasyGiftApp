@@ -5,6 +5,9 @@ class Like < ActiveRecord::Base
   belongs_to :gift_request
   belongs_to :comment
 
+  validates_presence_of :user
+  validates_presence_of :gift_request, :if => lambda{ |object| object.gift_request_id.present? }
+  validates_presence_of :comment, :if => lambda{ |object| object.comment_id.present? }
   validate :like_cannot_belong_to_post_and_comment
   validates_uniqueness_of :comment_id, :allow_nil => true, :scope => :user_id, :message => "can't be liked more than once"
   validates_uniqueness_of :gift_request_id, :allow_nil => true, :scope => :user_id, :message => "can't be liked more than once"
@@ -16,7 +19,7 @@ class Like < ActiveRecord::Base
   after_create :create_notification
 
   def create_notification
-    Notification.create_like_notification(self)
+    Notification.create_notification(self, "like")
   end
 
   def post_or_comment_owner
@@ -24,6 +27,14 @@ class Like < ActiveRecord::Base
       gift_request_user
     else
       comment_user
+    end
+  end
+
+  def gift_request_object
+    if type == "gift request"
+      gift_request
+    else
+      comment.gift_request
     end
   end
 
@@ -58,17 +69,25 @@ class Like < ActiveRecord::Base
       if status == 'like'
         new_count = comment_likes + 1
         comment.update_attributes(like_count: new_count)
+        newpoints = comment_owner_points + 50
+        comment.user.update_attributes(points: newpoints)
       else
         new_count = comment_dislikes + 1
         comment.update_attributes(dislike_count: new_count)
+        newpoints = comment_owner_points - 50
+        comment.user.update_attributes(points: newpoints)
       end
     else
       if status == 'like'
         new_count = gift_request_likes + 1
         gift_request.update_attributes(like_count: new_count)
+        newpoints = gift_request_owner_points + 50
+        gift_request.user.update_attributes(points: newpoints)
       else
         new_count = gift_request_dislikes + 1
         gift_request.update_attributes(dislike_count: new_count)
+        newpoints = gift_request_owner_points - 50
+        gift_request.user.update_attributes(points: newpoints)
       end   
     end
   end
@@ -115,6 +134,14 @@ class Like < ActiveRecord::Base
 
   def gift_request_dislikes
     gift_request.dislike_count
+  end
+
+  def comment_owner_points
+    comment.user.points
+  end
+
+  def gift_request_owner_points
+    gift_request.user.points
   end
 
 end

@@ -4,10 +4,16 @@ class GiftRequestsController < ApplicationController
   autocomplete :tag, :name, :gift_request_count => [:description]
   # GET /gift_requests
   # GET /gift_requests.json
+
   def index
     @gift_request = GiftRequest.new
-    @gift_requests = GiftRequest.all
-
+    if(params[:filter].nil?)
+      @gift_requests = GiftRequest.order('gift_requests.created_at DESC').page(params[:page]).per(10)
+    elsif params[:filter] == "popular"
+      @gift_requests = GiftRequest.popular.page(params[:page]).per(10)
+    elsif params[:filter] == "top"
+      @gift_requests = GiftRequest.top.page(params[:page]).per(10)
+    end
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @gift_requests }
@@ -17,11 +23,17 @@ class GiftRequestsController < ApplicationController
   # GET /gift_requests/1
   # GET /gift_requests/1.json
   def show
+    @request = request.fullpath
     @gift_request = GiftRequest.find(params[:id])
+    if @gift_request.user_has_access?(current_user.id) == false
+      redirect_to '/gift_requests'
+    end
+
     @gift_request_comments = @gift_request.comments
     @gift_request_likes = @gift_request.likes
     @gift_request_tags = @gift_request.tags
     respond_to do |format|
+      UserView.create(gift_request_id: @gift_request.id, user_id: current_user.id)
       format.html # show.html.erb
       format.json { render json: @gift_request }
     end
@@ -46,7 +58,7 @@ class GiftRequestsController < ApplicationController
   # POST /gift_requests
   # POST /gift_requests.json
   def create
-    @gift_request = GiftRequest.new(params[:gift_request])
+    @gift_request = GiftRequest.new(user_id: current_user.id, title: params[:gift_request]["title"], description: params[:gift_request]["description"])
     respond_to do |format|
       if @gift_request.save && @gift_request.attach_tags_to_gift_request(params[:tags])
           format.html { redirect_to @gift_request, notice: 'Gift request was successfully created.' }
@@ -62,10 +74,10 @@ class GiftRequestsController < ApplicationController
   # PUT /gift_requests/1.json
   def update
     @gift_request = GiftRequest.find(params[:id])
-
+  
     respond_to do |format|
       if @gift_request.update_attributes(params[:gift_request])
-        format.html { redirect_to @gift_request, notice: 'Gift request was successfully updated.' }
+       format.html { redirect_to @gift_request, notice: 'Gift request was successfully updated.' }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }

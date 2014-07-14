@@ -28,4 +28,8 @@ class UsersController < ApplicationController
     	end
   	end
 
+    def show
+      @user = User.find(params[:id])
+      @activity = @user.activityMessages(current_user)
+    end
 end

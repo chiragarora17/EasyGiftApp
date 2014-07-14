@@ -2,14 +2,16 @@ class CommentsController < ApplicationController
   before_filter :authenticate_user!
   
   def create
-    @comment = Comment.new(params[:comment])
+    @comment = Comment.new(user_id: current_user.id, description: params[:comment]["description"], gift_request_id: params[:comment]["gift_request_id"])
     gift_requests = @comment.gift_request
     respond_to do |format|
       if @comment.save
         format.html { redirect_to gift_requests, notice: 'Comment was successfully created.' }
         format.json { render json: @comment, status: :created, location: @comment }
       else
-        format.html { redirect_to gift_requests, notice: @comment.errors.full_messages.to_sentence }
+        format.html {
+          redirect_to gift_requests, notice: @comment.errors.full_messages.to_sentence 
+        }
         format.json { render json: @comment.errors.full_messages.to_sentence, status: :unprocessable_entity }
       end
     end
@@ -37,6 +39,19 @@ class CommentsController < ApplicationController
         end
       end
     end
+  end
+
+  def likes
+    @commentu = Array.new
+    @comment = Comment.find(params[:id])
+    @status = params[:status]
+    @comment.likes.each do |like|
+      if like.status == @status
+      @commentu.push(like.user_id => like.username)
+      end
+    end
+    #@commentu = {:comment => @comment.likes.as_json , :user => @commentu}
+    render json: @commentu
   end
 
 end

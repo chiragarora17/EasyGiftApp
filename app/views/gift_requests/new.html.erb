@@ -1,15 +1,10 @@
-<% content_for :title, "New Gift Request" %>
-
 <style type="text/css">
 .inline
 {
   display: inline
 }
-body{
-  background-color: #008080;
-  color: #ffffff;
-}
 
+/*
 @media {
   html {
     overflow: -moz-scrollbars-vertical; 
@@ -27,16 +22,18 @@ body{
     width:1024px;
     display: block;
 }
-
+*/
 </style>
+<% content_for :title, "New Gift Request" %>
 
 <%= render 'subnav' %>
 
     <script type="text/javascript">
     var node = document.getElementById("subnav").getElementsByTagName("li")[4];
-	node.setAttribute("class", "active");
+	node.setAttribute("class", "active padd");
     </script>
-
+ <div style="margin-left: 10%">
+<h3 class="inline" style="margin-left: 2%"> New Gift Request</h3>
+</div>
+<br />
 <%= render 'form' %>
-
-<%= link_to 'Back', gift_requests_path %>

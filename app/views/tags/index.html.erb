@@ -1,23 +1,4 @@
-<!-- <h1>Listing tags</h1>
 
-<table>
-  <tr>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
-
-<% @tags.each do |tag| %>
-  <tr>
-    <td><%= tag.name %></td>
-    <td><%= link_to 'Show', tag %></td>
-
-    <td><%= link_to 'Destroy', tag, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-  </tr>
-<% end %>
-</table>
-
-<br /> -->
 <style type="text/css">
 
 
@@ -34,52 +15,72 @@
          .excerpt
         {
           font-size: 12px;
-          height: 39px;
+          height: 50px;
           line-height: 14px;
           overflow: hidden;
           margin-bottom: 4px;
         }
 
-.inline
-{
-  display: inline
-}
-body{
-  background-color: #008080;
-  color: #ffffff;
+        .tagpost
+        {
+          color: #4a6b82;
+          background-color:#e0eaf1;
+          border-bottom:1px solid #b3cee1;
+          border-right: 1px solid #b3cee1;
+          /*padding: 3px 4px 3px 4px;*/
+          margin: 2px 2px 2px 0;
+          text-decoration: none;
+          /*font-size: 90%;*/
+          line-height: 1.4;
+          white-space: nowrap;
+          display: inline-block;
+        }
+
+        .tab-content {
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    padding: 10px;
 }
 
-.jumbotron{
-  background-color:#c0c0c0;
-  color:#000000;
+.nav-tabs {
+    margin-bottom: 0;
+    border-bottom:  1px solid #ddd;
 }
 
-@media {
-  html {
-    overflow: -moz-scrollbars-vertical; 
-    overflow-x: scroll; 
-    overflow-y: scroll;
-  }
-}
-
-.container {
-  width: 1024px;
-  display: block;
-}
 
 </style>
  
 <%= render :partial => 'gift_requests/subnav' %>
  
  <script type="text/javascript">
-    var node = document.getElementById("subnav").getElementsByTagName("li")[1];
-  node.setAttribute("class", "active");
+    var node = document.getElementById("subnav").getElementsByTagName("li")[2];
+  node.setAttribute("class", "active padd");
     </script>
-<br />
 
- <div class="container">
+
+ <div class="container" style="margin-left:8%">
 <!-- Nav tabs -->
-<ul class="nav nav-tabs">
+         <!--   <form class="ylnavbar-form navbar-left" role="search" style="padding-left:140px; padding-top:20px" action="/tags/tag_search" method = "post">
+                <div class="form-group">
+                <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" />
+                <input type="text" id="giftrequestsearch" name="keyword" style="height: 28px; font-size: 12px;line-height: 12px; width: 320px" class="form-control" placeholder="Search">
+                <input name="keyword" id="giftrequestsearch" data-autocomplete="/gift_requests/autocomplete_tag_name" class=" form-control" id="autocomplete_tag"/>
+                  </div>
+                <input type="submit" class="btn btn-default" style="height: 28px; font-size: 12px;line-height: 12px; width: 90px"value="Submit">
+            </form> -->
+<h4><strong> Tags </strong></h4>
+<h5>A tag is a keyword or label that categorizes your question with other, similar questions. Using the right tags makes it easier for others to find and answer your question.
+</h5>
+Type to find tags: 
+            <div class="inline">
+                <input name="authenticity_token" type="hidden" id="authenticity_token" value="<%= form_authenticity_token %>" />
+                <input name="keyword" data-autocomplete="/gift_requests/autocomplete_tag_name" class=" form-control inline" style="width:20%" placeholder="Find Tag" id="autocomplete_tag"/>
+            <button onclick="onclicktagsearch()" class="btn btn-default" style="font-size: 15px;">Submit</button>
+            </div>
+<br/><br/><br/>
+
+<div id="divcontainer" >
+<ul class="nav nav-tabs ">
   <li class="active"><a href="#popular" data-toggle="tab">Popular</a></li>
   <li><a href="#name" data-toggle="tab">Name</a></li>
   <li><a href="#new" data-toggle="tab">New</a></li>
@@ -89,84 +90,99 @@ body{
 <!-- Tab panes -->
 <div class="tab-content">
   <div class="tab-pane fade in active" id="popular">
+    <div class="table-responsive">
+      <table class="table">
+        <tr>
+            <% i = 0 %>
 
-<!--     <table>   
-      <tr>
-        <% (@tags).each do |tag| %>
-          <td class="tag-cell">
-            <div class="excerpt">
-              <td><%= tag.name %></td>
-            </div>
-          </td>
-        <% end %>
-      </tr>
-    </table> -->
+           <% tt = @tags.sort_by(&:gift_request_count) %>
+           <% @tags = tt.reverse %>
 
-<table>
-    <div class="row">
-        <% (@tags).each do |tag| %>
-            <div class="col-sm-3">
-              <div class="tag-cell">
-              <div class="excerpt">
-                <%= tag.name %>
-                <%= link_to 'Show', tag %>
-
-                <%= link_to 'Destroy', tag, method: :delete, data: { confirm: 'Are you sure?' } %>
-              </div>
-              </div>    
-            </div>
-        <% end %>
-     </div>
-   
-
-</table>
-
-
-
-
-<!--       <tr>
-        <td class="tag-cell">
-          <div class="excerpt">
-            sdfdsfsf
-          </div>
-         </td>
-          <td class="tag-cell">
-          <div class="excerpt">
-            sdfdsfsf
-          </div>
-         </td>
-          <td class="tag-cell">
-          <div class="excerpt">
-            sdfdsfsf
-          </div>
-         </td>
-          <td class="tag-cell">
-          <div class="excerpt">
-            sdfdsfsf
-          </div>
-         </td>
-          <td class="tag-cell">
-          <div class="excerpt">
-            sdfdsfsf
-          </div>
-         </td>
-      </tr>
-    </table> -->
-
-
-
-
-
-
-
+            <% @tags.each do |tag| %>
+              <% if i == 4 %>
+              <% i = 0 %>
+              </tr>
+              <tr> 
+              <% end %> 
+                <td class="tag-cell">
+                <div class="excerpt">
+                  <%= link_to tag.name, tag, :class => "btn btn-default btn-sm tagpost"%> x
+                  <%= tag.gift_request_count %>
+               <br>
+                  New Request <%= time_ago_in_words(tag.updated_at) %> ago
+                </div>
+              </td>
+              <% i = i+1 %>
+            <% end %>
+        </tr>
+      </table>
+    </div>
+  
   </div>
+
   <div class="tab-pane fade" id="name">
 
+  <div class="table-responsive">
+      <table class="table">
+        <tr>
+            <% i = 0 %>
 
+           <% @tags = @tags.sort_by(&:name) %>
+            <% @tags.each do |tag| %>
+              <% if i == 4 %>
+              <% i = 0 %>
+              </tr>
+              <tr> 
+              <% end %> 
+                <td class="tag-cell">
+                <div class="excerpt">
+                  <%= link_to tag.name, tag, :class => "btn btn-default btn-sm tagpost"%> x
+                  <%= tag.gift_request_count %>
+                               <br>
+                  New Request <%= time_ago_in_words(tag.updated_at) %> ago
+  
+                </div>
+              </td>
+              <% i = i+1 %>
+            <% end %>
+        </tr>
+      </table>
+    </div>
     
   </div>
-  <div class="tab-pane fade" id="new">...
+  <div class="tab-pane fade" id="new">
+
+  <div class="table-responsive">
+      <table class="table">
+        <tr>
+            <% i = 0 %>
+
+           <% tt = @tags.sort_by(&:created_at) %>
+           <% @tags = tt.reverse %>
+
+            <% @tags.each do |tag| %>
+              <% if i == 4 %>
+              <% i = 0 %>
+              </tr>
+              <tr> 
+              <% end %> 
+                <td class="tag-cell">
+                <div class="excerpt">
+                  <%= link_to tag.name, tag, :class => "btn btn-default btn-sm tagpost"%> x
+                  <%= tag.gift_request_count %>
+                               <br>
+                  New Request <%= time_ago_in_words(tag.updated_at) %> ago
+  
+                </div>
+              </td>
+              <% i = i+1 %>
+            <% end %>
+        </tr>
+      </table>
+    </div>
+
   </div>
+</div>
 </div>
 
 </div>
