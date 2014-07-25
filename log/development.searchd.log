@@ -1,3 +1,49 @@
 [Sun Jul 13 15:10:01.655 2014] [ 3483] Child process 3484 has been forked
 [Sun Jul 13 15:10:01.655 2014] [ 3484] listening on 127.0.0.1:9306
 [Sun Jul 13 15:10:01.680 2014] [ 3484] accepting connections
+[Mon Jul 14 00:18:54.413 2014] [ 3484] caught SIGTERM, shutting down
+[Mon Jul 14 00:18:54.514 2014] [ 3484] shutdown complete
+[Wed Jul 16 20:04:13.803 2014] [ 5590] Child process 5591 has been forked
+[Wed Jul 16 20:04:13.803 2014] [ 5591] listening on 127.0.0.1:9306
+[Wed Jul 16 20:04:13.900 2014] [ 5591] accepting connections
+[Thu Jul 17 05:46:38.169 2014] [ 5591] caught SIGTERM, shutting down
+[Thu Jul 17 05:46:38.227 2014] [ 5591] shutdown complete
+[Sat Jul 19 16:38:54.898 2014] [ 4199] Child process 4200 has been forked
+[Sat Jul 19 16:38:54.898 2014] [ 4200] listening on 127.0.0.1:9306
+[Sat Jul 19 16:38:54.979 2014] [ 4200] accepting connections
+[Sat Jul 19 17:37:17.923 2014] [ 4200] caught SIGTERM, shutting down
+[Sat Jul 19 17:37:21.019 2014] [ 4200] shutdown complete
+[Sat Jul 19 17:37:21.022 2014] [ 4199] Child process 4200 has been finished, exit code 0. Watchdog finishes also. Good bye!
+[Sat Jul 19 17:37:21.159 2014] [ 7608] Child process 7609 has been forked
+[Sat Jul 19 17:37:21.160 2014] [ 7609] listening on 127.0.0.1:9306
+[Sat Jul 19 17:37:21.160 2014] [ 7609] accepting connections
+[Sat Jul 19 17:37:22.290 2014] [ 7609] rotating indices (seamless=1)
+[Sat Jul 19 17:37:22.290 2014] [ 7609] WARNING: INTERNAL ERROR: nothing to rotate after SIGHUP
+[Sun Jul 20 00:37:31.675 2014] [ 7609] caught SIGTERM, shutting down
+[Sun Jul 20 00:37:31.737 2014] [ 7609] shutdown complete
+[Tue Jul 22 17:32:14.152 2014] [ 3538] Child process 3539 has been forked
+[Tue Jul 22 17:32:14.153 2014] [ 3539] listening on 127.0.0.1:9306
+[Tue Jul 22 17:32:14.264 2014] [ 3539] accepting connections
+[Tue Jul 22 20:38:32.044 2014] [ 3539] caught SIGTERM, shutting down
+[Tue Jul 22 20:38:32.198 2014] [ 3539] shutdown complete
+[Tue Jul 22 22:30:59.632 2014] [ 3909] Child process 3910 has been forked
+[Tue Jul 22 22:30:59.633 2014] [ 3910] listening on 127.0.0.1:9306
+[Tue Jul 22 22:30:59.744 2014] [ 3910] accepting connections
+[Wed Jul 23 04:22:49.714 2014] [ 3910] caught SIGTERM, shutting down
+[Wed Jul 23 04:22:49.739 2014] [ 3910] shutdown complete
+[Wed Jul 23 19:41:13.763 2014] [ 8193] Child process 8194 has been forked
+[Wed Jul 23 19:41:13.764 2014] [ 8194] listening on 127.0.0.1:9306
+[Wed Jul 23 19:41:13.848 2014] [ 8194] accepting connections
+[Thu Jul 24 01:03:56.807 2014] [ 8194] caught SIGTERM, shutting down
+[Thu Jul 24 01:03:56.980 2014] [ 8194] shutdown complete
+[Thu Jul 24 18:07:51.659 2014] [ 4259] Child process 4260 has been forked
+[Thu Jul 24 18:07:51.660 2014] [ 4260] listening on 127.0.0.1:9306
+[Thu Jul 24 18:07:51.759 2014] [ 4260] accepting connections
+[Thu Jul 24 20:09:56.116 2014] [ 6578] Child process 6579 has been forked
+[Thu Jul 24 20:09:56.116 2014] [ 6579] listening on 127.0.0.1:9306
+[Thu Jul 24 20:09:56.224 2014] [ 6579] binlog: replaying log /home/chirag/Git/EasyGift/tmp/binlog/development/binlog.001
+[Thu Jul 24 20:09:56.233 2014] [ 6579] binlog: index gift_request_core: recovered from tid 51 to tid 54
+[Thu Jul 24 20:09:56.233 2014] [ 6579] binlog: replay stats: 3 rows in 3 commits; 0 updates; 1 indexes
+[Thu Jul 24 20:09:56.234 2014] [ 6579] binlog: finished replaying /home/chirag/Git/EasyGift/tmp/binlog/development/binlog.001; 0.0 MB in 0.000 sec
+[Thu Jul 24 20:09:56.234 2014] [ 6579] binlog: finished replaying total 1 in 0.009 sec
+[Thu Jul 24 20:09:56.234 2014] [ 6579] accepting connections

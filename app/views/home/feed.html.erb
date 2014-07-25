@@ -1,0 +1,229 @@
+<style>
+.inline
+{
+	display:inline;
+}
+.scroll
+{
+	overflow:auto;
+}
+.btn-danger{
+	color:#000;
+}
+
+.nav-pills > li.active > a,
+.nav-pills > li.active > a:hover,
+.nav-pills > li.active > a:focus {
+	font-style: italic;
+	font-weight: bold;
+}
+
+</style>
+
+<% content_for :title, "Feed" %>
+
+<%= render :partial => 'gift_requests/subnav' %>
+<script type="text/javascript">
+var node = document.getElementById("subnav").getElementsByTagName("li")[0];
+node.setAttribute("class", "active padd");
+</script>
+
+
+<div class="container cc" align="center">
+
+	<div class="container-fluid">
+		<table class="table" align="center" style="background-color:#ffffff; width:90%;">
+			<!-- xxxxxxxxxxxxx -->
+			<% @feed.each do |feed| %>
+			<tr>
+				<td>
+					<div style="background:#E0E0E0; padding-left:3%; padding-right:3%; padding-top:1.5%;">
+
+						<div class="row">
+
+							<div class="col-md-8">
+								<p><font color="blue">
+									<%= feed["message"] %></font>
+								</p>
+							</div>
+							
+							 <% feed["gift_request"].comments.each do |comment| %>
+					              <% if comment.final_answer == true %>
+					                <% @flag = true %>
+					              <% end %>
+					            <% end %>
+					            <% if @flag == true %>
+							<div class="col-md-4" align="center">
+								<h4 class="inline" >
+                					<span class="label label-success" style="">ANSWERED
+                				</span>
+              					</h4>
+							</div>
+							<% end %>
+						</div>
+
+						<div class="row">
+
+							<div class="inline col-md-8 usercontent">
+
+								<a href="<%= feed["url"] %>" style="background:transparent;text-decoration:none"><font color="purple" size="3px"> 
+									<%= feed["gift_request"].title %></font>
+								</a>
+							</div>
+
+							<div class="col-md-4" align="right" style="padding-right:7%">
+
+								<span style=""> Asked on: <%= feed["gift_request"].created_at.strftime("%b %d, %Y %H:%M") %>
+								</span>
+
+							</div>
+						</div>
+
+
+						<div class="row">
+
+							<div class="inline col-md-8 usercontent">
+								
+								<div class="createdby">
+									<strong>By:&nbsp;</strong>
+									<a href="/users/<%= feed["actor_id"] %>" style="background:transparent;text-decoration:none;color:#333">
+										<%= feed["gift_request"].username %>
+									</a>
+								</div>
+								
+								<div class="scroll" style="height:50px; width:650px; padding-top:5px; word-wrap:break-word;">
+									<b>Description:&nbsp;</b>
+									<%= feed["gift_request"].description[0..120]%> 
+									<% if feed["gift_request"].description.size > 120 %> 
+									... 
+									<% end %>
+								</div>
+
+							</div>
+
+							<div class="col-md-4" align="center">
+								<br>
+								<a  id="facebook_share" style="background:transparent" href="#"> <%= image_tag "share.png", :style => "height:38px;"%>
+								</a>
+								
+								<br>
+								<br>
+								
+								<div class="inline" align="center">
+									<form action="/likes/create" method="post" class="inline" id="likeform">
+										<input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" />
+										<input type="hidden" name="like[user_id]" id="like_userid" value="<%= current_user.id %>" />
+										<input type="hidden" name="like[gift_request_id]" id="like_giftrequest_id" value="15" />
+										<input type="hidden" name="like[status]"  id="like_status" value="like" />
+										<button type="submit" class="btn btn-sm" onclick="return postlikedislike('likeform')"><%= image_tag 'like.png', :class=>"inline " , :alt => 'lgo', width:"20",   height:"20" %></button>
+									</form>
+
+									&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+
+									<form action="/likes/create" method="post" class="inline">
+										<input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" />
+										<input type="hidden" name="like[user_id]" value="<%= current_user.id %>" />
+										<input type="hidden" name="like[gift_request_id]" value="" />
+										<input type="hidden" name="like[status]" value="dislike" />
+										<button type="submit" class="btn btn-sm"><%= image_tag 'dislike.png', :class=>"inline " , :alt => 'lgo', width:"20",   height:"20" %></button>
+									</form>
+
+								</div>
+
+							</div>
+						</div>
+
+						<div class="row">
+
+							<div align="left">
+								<div align="center">
+									
+									Comments:&nbsp;<strong><%= feed["gift_request"].comments.count %>
+
+
+									&nbsp;&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;&nbsp;</strong>
+									
+									Views:&nbsp;<strong><%= feed["gift_request"].views %>
+
+									<% if feed["gift_request"].like_count > 0 %>
+									
+									&nbsp;&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;&nbsp;</strong>
+
+									<button type="submit" class="btn btn-success " data-toggle="modal" data-target="#likemodal" > <%= feed["gift_request"].like_count %> Liked </button>
+									<% end %>
+									
+									<% if feed["gift_request"].dislike_count > 0 %>
+									<strong>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;&nbsp;</strong>
+
+									<button type="submit" class="btn btn-danger" data-toggle="modal" data-target="#dislikemodal" ><%= feed["gift_request"].dislike_count %> Disliked</button>
+									<% end %>
+								
+								</div>
+							</div>
+						</div>
+
+						<br>
+
+						<div class="row">
+
+							<div class="commentarea" style="background:#F8F8F8">
+								<% GiftRequest.find(feed["gid"]).comments.each do |comment|%>
+								<div class="comments" style="padding:8px;padding-left:16px;padding-right:16px;">
+									
+									<a href="/users/<%= comment.user_id %>"><font color="purple"><b><%= comment.username %></b>:</font></a> <%= comment.description %>
+
+									<div class="timestamp">
+										<%= comment.created_at.strftime("%b %d, %Y %H:%M") %> 
+
+										<form action="/likes/create" method="post" class="inline">
+											<input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" />
+											<input type="hidden" name="like[user_id]" value="<%= current_user.id %>" />
+											<input type="hidden" name="like[comment_id]" value="<%= comment.id %>" />
+											<input type="hidden" name="like[status]" value="like" />
+											<button type="submit" class="inline"><%= image_tag 'like.png', :class=>"inline " , :alt => 'lgo', width:"15",   height:"15" %></button>
+										</form>
+
+										<form action="/likes/create" method="post" class="inline">
+											<input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" />
+											<input type="hidden" name="like[user_id]" value="<%= current_user.id %>" />
+											<input type="hidden" name="like[comment_id]" value="<%= comment.id %>" />
+											<input type="hidden" name="like[status]" value="dislike" />
+											<button type="submit" class="inline"><%= image_tag 'dislike.png', :class=>"inline " , :alt => 'lgo', width:"15",   height:"15" %></button>
+										</form>
+
+									</div>
+
+								</div>
+								<% end %>
+							</div>
+
+							<br>
+
+							<div align="center">
+								<div style="width:80%;">
+
+									<input type="email" class="form-control inline" id="exampleInputEmail1" placeholder="Write a comment...">
+								</div>
+							</div>
+							<br>
+						</div>
+
+					</div>
+
+
+			</td>
+
+		</tr>
+
+		<% end %>
+
+		<!-- xxxxxxxxxxxxx -->
+	</table>
+
+</div>
+
+</div> <!-- end of main cc div -->  
+<br>
+<br>
+<br>
+<br>

@@ -1,7 +1,7 @@
 class Notification < ActiveRecord::Base
   attr_accessible :event_id, :type_of_event, :actor_id
 
-  has_many :user_notifications
+  has_many :user_notifications, :dependent => :destroy
   has_many :users, :through => :user_notifications
 
   validates_presence_of :event_id
@@ -35,6 +35,14 @@ class Notification < ActiveRecord::Base
       return true
     else
       return false
+    end
+  end
+
+  def self.destroy_notification(event, type)
+    unless (notification_to_delete = Notification.where(type_of_event: type, event_id: event.id)).nil?
+      notification_to_delete.each do |notification|
+        notification.destroy
+      end
     end
   end
 
@@ -80,51 +88,16 @@ class Notification < ActiveRecord::Base
     end
   end
 
-    # def self.create_final_answer_notifications(comment)
-    #   @notification = Notification.new
-    #   @notification.event_id = comment.id
-    #   @notification.type_of_event = "final_answer_selection"
-    #   @notification.actor_id = comment.gift_request_owner.id
-
-    #   @notification_selected = Notification.new
-    #   @notification_selected.event_id = comment.id
-    #   @notification_selected.type_of_event = "final_answer_selected"
-    #   @notification_selected.actor_id = comment.user.id
-
-    #   if @notification.save && @notification_selected.save
-    #     send_final_answer_selection_notifications_to_users(@notification, comment)
-    #     send_final_answer_selected_notifications_to_users(@notification_selected, comment)
-    #     return true
-    #   else
-    #     return false 
-    #   end
-    # end
-
-    # def self.send_final_answer_selection_notifications_to_users(notification, comment)
-    #   actor = notification.actor
-    #   actors_followers = actor.followers
-    #   actee = comment.user
-    #   UserNotification.create(notification: notification, user: actee, message: "#{actor.username} selected your comment on '#{comment.gift_request.title}' as the final answer")
-    #   actors_followers.each do |follower|
-    #     unless follower == actee
-    #       UserNotification.create(notification: notification, user: follower, message: "#{actor.username} selected #{actee.username}'s comment on '#{comment.gift_request.title}' as the final answer")
-    #     end     
-    #   end
-    # end
-
-    # def self.send_final_answer_selected_notifications_to_users(notification, comment)
-    #   actor = notification.actor
-    #   actors_followers = actor.followers
-    #   actee = comment.gift_request_owner
-    #   actors_followers.each do |follower|
-    #     unless follower == actee
-    #       UserNotification.create(notification: notification, user: follower, message: "#{actor.username}'s comment on '#{comment.gift_request.title}' was selected as the final answer by #{actee.username}")
-    #     end     
-    #   end
-    # end
-
   def formatted_url
     "/gift_requests/" + link_to_url.id.to_s
+  end
+
+  def formatted_id
+    link_to_url.id.to_s
+  end
+  
+  def gift_request
+    GiftRequest.find(formatted_id)
   end
 
   def link_to_url
@@ -140,8 +113,6 @@ class Notification < ActiveRecord::Base
       event.gift_request
     end
   end
-
-
 
   def event
     if type_of_event == "like"
@@ -199,7 +170,7 @@ class Notification < ActiveRecord::Base
       else
         actee = event.user.username + "'s"
       end
-      "#{actor} has selected #{actee} comment on '#{event.gift_request.title}' as the final answer"
+      "#{actor} selected #{actee} comment on '#{event.gift_request.title}' as the final answer"
     end
   end
 
@@ -215,7 +186,7 @@ class Notification < ActiveRecord::Base
       else
         like_actee = event.post_or_comment_owner.username + "'s"
       end
-      like_actor + " " + event.status + "s " + like_actee + " " + event.type
+      like_actor + " " + event.status + "d " + like_actee + " " + event.type
     end
   end
 
