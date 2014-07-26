@@ -47,3 +47,13 @@
 [Thu Jul 24 20:09:56.234 2014] [ 6579] binlog: finished replaying /home/chirag/Git/EasyGift/tmp/binlog/development/binlog.001; 0.0 MB in 0.000 sec
 [Thu Jul 24 20:09:56.234 2014] [ 6579] binlog: finished replaying total 1 in 0.009 sec
 [Thu Jul 24 20:09:56.234 2014] [ 6579] accepting connections
+[Fri Jul 25 03:38:03.931 2014] [ 6579] caught SIGTERM, shutting down
+[Fri Jul 25 03:38:04.009 2014] [ 6579] shutdown complete
+[Fri Jul 25 16:24:16.264 2014] [ 6418] Child process 6419 has been forked
+[Fri Jul 25 16:24:16.280 2014] [ 6419] listening on 127.0.0.1:9306
+[Fri Jul 25 16:24:16.360 2014] [ 6419] accepting connections
+[Fri Jul 25 16:34:50.272 2014] [ 6419] caught SIGTERM, shutting down
+[Fri Jul 25 16:34:50.405 2014] [ 6419] shutdown complete
+[Fri Jul 25 23:21:47.679 2014] [ 3402] Child process 3403 has been forked
+[Fri Jul 25 23:21:47.679 2014] [ 3403] listening on 127.0.0.1:9306
+[Fri Jul 25 23:21:47.769 2014] [ 3403] accepting connections

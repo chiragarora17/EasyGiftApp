@@ -78,7 +78,7 @@ class User < ActiveRecord::Base
     message_activity
   end
 
-  def feed
+def feed
     feed = []
     followed_users.each do |followed_user|
       feed += followed_user.activity.sort_by(&:created_at).reverse
@@ -147,6 +147,10 @@ class User < ActiveRecord::Base
 
   def upgrade_to_business_account
     update_attributes(business_account: true)
+  end
+
+  def downgrade_to_regular_account
+    update_attributes(business_account: false)
   end
 
   # def is_business_account

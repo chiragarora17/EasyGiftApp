@@ -198,8 +198,14 @@ tr.border_bottom td {
        <% case activity["type"] %>
         <% when "gift_request" %>
           <b> Gift Request </b>  
+        <% when "like" %>
+          <b> Like </b>  
+        <% when "comment" %>
+          <b> Comment </b>  
         <% when "final_answer_selected" %>
           <b style="color:green">Final Answer Selected </b>
+        <% when "final_answer_selection" %>
+          <b style="color:green">Final Answer Selection </b>
         <% else  %>
           <b> <%= activity["type"] %> </b> 
         <% end %> 
@@ -432,7 +438,7 @@ tr.border_bottom td {
                 <% if @votes >= 0 %>
                 +<%= @votes %>
                 <% else  %>
-                -<%= @votes %>
+                <%= @votes %>
                 <% end %>
                 </h4><p style="font-size=10">Likes</p></div>
             </td><td width="80%" align="left">
@@ -468,7 +474,7 @@ tr.border_bottom td {
                 <% if @votes >= 0 %>
                 +<%= @votes %>
                 <% else  %>
-                -<%= @votes %>
+                <%= @votes %>
                 <% end %>
                 </h4><p style="font-size=10">Likes</p></div>
             </td><td width="80%" align="left">
@@ -625,8 +631,17 @@ tr.border_bottom td {
               </td>
               <td>
                   <div class="inline">
-                  <button type="submit" class="btn btn-info btn-medium inline" onclick="unfollow(<%= current_user.id %>,<%= followed.id %>)"><span class="inline glyphicon glyphicon-minus">UnFollow</span></button>
-
+                    <% if current_user.id != followed.id %>
+                     <% followedflag = current_user.following?(followed)  %>
+                    <% if followedflag.nil? %>
+<!--                   <button type="submit" class="btn btn-info btn-medium inline" onclick="unfollow(<%= current_user.id %>,<%= followed.id %>)"><span class="inline glyphicon glyphicon-minus">UnFollow</span></button> -->
+                <button type="submit" class="btn btn-info btn-medium " onclick="follow(<%= current_user.id %>,<%= followed.id %>)"><span class="glyphicon glyphicon-plus">
+                                   Follow</span></button>
+                    <% else %>
+                  <button type="submit" class="btn btn-info btn-medium" onclick="unfollow(<%= current_user.id %>,<%= followed.id %>)"><span class="glyphicon glyphicon-minus">
+                   UnFollow</span></button>
+                    <% end %>
+                    <% end %>
                     </div>
                   
                   

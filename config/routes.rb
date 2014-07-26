@@ -2,13 +2,14 @@ EasyGift::Application.routes.draw do
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
   # match '/users/sign_in' => 'home#index'
-  root :to => 'home#profile'
+  root :to => 'home#feed'
   match 'testpage' => 'home#test'
   match 'landing' => 'home#index'
   match 'account_settings' => 'home#account_settings'
   match 'profile'   => 'home#profile'
 
   match 'likes/create' => 'likes#create', :via => [:post]
+  match 'likes/feed/create' => 'likes#feedcreate', :via => [:post]
   match 'comments/final' => 'comments#final', :via => [:post]
   match '/user_notifications/create' => 'user_notifications#create'
 
@@ -23,6 +24,7 @@ EasyGift::Application.routes.draw do
   match 'users/update_password' => 'users#update_password'
   match 'users/generate_new_password_email' => 'users#generate_new_password_email'
   post 'comments' => 'comments#create'
+  match 'comments/feed' => 'comments#feedcreate', :via => [:post]
   match 'feed' => 'home#feed'
   match 'gift_requests/searchresult' => 'gift_requests#gift_request_search', :via => [:post]
   match 'tags/tag_search' => 'tags#tag_search', :via => [:post]
@@ -30,6 +32,9 @@ EasyGift::Application.routes.draw do
   match 'follow' => 'users#follow', :via => [:post]
   match '/unfollow/:id' => 'users#unfollow', :via => [:post]
   match '/privacy_policy' => 'home#privacy_policy'
+  match 'b2b/tags/subscribe' => 'tags#tag_subscribe', :via => [:post]
+  match 'b2b/tags/unsubscribe' => 'tags#tag_unsubscribe', :via => [:post]
+
   # match '/helloworld' => 'home#hello_world'
   #get 'gift_requests/searchresult' => 'gift_requests#tag_search'
 
