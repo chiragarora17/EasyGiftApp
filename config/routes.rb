@@ -1,4 +1,20 @@
 EasyGift::Application.routes.draw do
+
+  get 'conversations' => 'conversations#index'
+
+ 
+  post "conversations" => 'conversations#create'
+  post "conversations/delete" => 'conversations#delete'
+  post "conversations/mark_as_read" => 'conversations#mark_as_read'
+  post "conversations/mark_as_unread" => 'conversations#mark_as_unread'
+
+  match 'conversations/:id' => 'conversations#show'
+
+  match "sidneystestpassword" => "users#reset_password_test"
+
+  match 'loadmore/conversations' => 'conversations#loadmore', :via => [:post]
+
+
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
   # match '/users/sign_in' => 'home#index'
@@ -12,7 +28,7 @@ EasyGift::Application.routes.draw do
   match 'likes/feed/create' => 'likes#feedcreate', :via => [:post]
   match 'comments/final' => 'comments#final', :via => [:post]
   match '/user_notifications/create' => 'user_notifications#create'
-
+  match 'feed/description' => 'home#description', :via => [:post]
 
   devise_for :users, :controllers => { :registrations => 'registrations', :sessions => 'user_sessions' }
 
@@ -21,7 +37,9 @@ EasyGift::Application.routes.draw do
   match 'users/:id' => 'users#show'
   match 'users/edit_password' => 'users#edit_password'
   match 'auth/:provider/callback' => 'authentications#create'
-  match 'users/update_password' => 'users#update_password'
+
+  match 'password/users/update_password' => 'users#update_password'
+
   match 'users/generate_new_password_email' => 'users#generate_new_password_email'
   post 'comments' => 'comments#create'
   match 'comments/feed' => 'comments#feedcreate', :via => [:post]
@@ -34,6 +52,9 @@ EasyGift::Application.routes.draw do
   match '/privacy_policy' => 'home#privacy_policy'
   match 'b2b/tags/subscribe' => 'tags#tag_subscribe', :via => [:post]
   match 'b2b/tags/unsubscribe' => 'tags#tag_unsubscribe', :via => [:post]
+  match 'b2b/upgrade' => 'users#upgrade_account', :via => [:post]
+  match 'b2b/downgrade' => 'users#downgrade_account', :via => [:post]
+  match 'user/user_search' => 'users#user_search_ajax', :via => [:post]
 
   # match '/helloworld' => 'home#hello_world'
   #get 'gift_requests/searchresult' => 'gift_requests#tag_search'

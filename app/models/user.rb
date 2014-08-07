@@ -40,8 +40,12 @@ class User < ActiveRecord::Base
   has_many :gift_request_black_list
   has_many :gift_request_white_list
 
-  has_many :business_account_tags
+  has_many :business_account_tags, :dependent => :destroy
   has_many :tags, :through => :business_account_tags
+
+  has_many :user_conversations
+  has_many :conversations, :through => :user_conversations
+  has_many :private_messages, :through => :conversations
 
   def apply_omniauth(omniauth)
     authentications.build(:provider => omniauth['provider'], :uid => omniauth['uid'])
@@ -49,6 +53,10 @@ class User < ActiveRecord::Base
 
   def following?(other_user)
     relationships.find_by_followed_id(other_user.id)
+  end
+
+  def followed?(other_user)
+    reverse_relationships.find_by_follower_id(other_user.id)
   end
 
   def follow!(other_user)
@@ -70,6 +78,7 @@ class User < ActiveRecord::Base
       notification_hash["id"] = notification.id
       notification_hash["type"] = notification.type_of_event
       notification_hash["url"] = notification.formatted_url
+      notification_hash["gift_request"] = notification.gift_request
       notification_hash["message"] = notification.constructActivityMessage(viewing_user)
       notification_hash["created_at"] = notification.created_at
       notification_hash["updated_at"] = notification.updated_at
@@ -81,9 +90,9 @@ class User < ActiveRecord::Base
 def feed
     feed = []
     followed_users.each do |followed_user|
-      feed += followed_user.activity.sort_by(&:created_at).reverse
+      feed += followed_user.activity.sort_by(&:created_at)
     end
-    # feed = feed.sort_by &:created_at
+    feed = feed.sort_by(&:created_at).reverse
     message_feed = []
     feed.each do |notification|
       notification_hash = {}
@@ -122,12 +131,14 @@ def feed
   def subscribe_tags(tag_id)
     if business_account
       tag = Tag.find(tag_id)
-      if tag
+      if ((tag) && (self.tags.where(id:tag_id).empty?)) 
         begin
           self.tags << tag
         end
+        return true
+      else
+        return false
       end
-      return true
     else
       return false
     end
@@ -135,10 +146,11 @@ def feed
 
   def unsubscribe_tags(tag_id)
     if business_account
-      tags_to_unsubscribe = BusinessAccountTag.where(tag_id: tag_id, user_id: id)
-      tags_to_unsubscribe.each do |tag|
-        tag.destroy
-      end
+      tag_to_unsubscribe = business_account_tags.find_by_tag_id(tag_id)
+      # tags_to_unsubscribe = BusinessAccountTag.where(tag_id: tag_id, user_id: id)
+      #tags_to_unsubscribe.each do |tag|
+      tag_to_unsubscribe.destroy
+      # end
       return true
     else
       return false
@@ -153,13 +165,6 @@ def feed
     update_attributes(business_account: false)
   end
 
-  # def is_business_account
-  #   if business_account
-  #     return true
-  #   else
-  #     return false
-  #   end
-  # end
   def subscribed_tags
     if business_account
       return tags
@@ -167,5 +172,91 @@ def feed
       return false
     end
   end
+# if current_user has past conversation with user, return conversation, else return nil
+  def past_user_conversation(user_id)
+    past_user_conversation = nil
+      conversations.each do |conversation|
+        unless conversation.user_conversations.find_by_user_id(user_id).nil?
+          past_user_conversation = conversation.user_conversations.find_by_user_id(user_id)
+          break
+        end
+      end
+    return past_user_conversation
+  end
+
+  def send_private_message(user_id, message)
+    if self.id == user_id
+      return false
+    else
+      user_conversation = past_user_conversation(user_id)
+      if user_conversation.nil?
+        conversation = create_new_conversation(user_id)
+      else
+        conversation = user_conversation.conversation
+        conversation.user_conversations.each do |user_conversation|
+          if user_conversation.deleted
+            user_conversation.update_attributes(deleted: false)
+          end
+        end
+      end
+      new_message = PrivateMessage.new
+      new_message.user_id = id
+      new_message.conversation_id = conversation.id
+      new_message.message = message
+      if new_message.save
+        conversation.user_conversations.find_by_user_id(user_id).mark_unread
+        conversation.user_conversations.find_by_user_id(self.id).mark_read
+        conversation.last_message_at = new_message.created_at
+        conversation.save
+        real_time_message(user_id, new_message,conversation.id)
+        return conversation
+      else
+        return false
+      end
+    end
+  end
+
+  def real_time_message(user_id, new_message,conversation_id)
+    to_channel = 'user' + user_id.to_s + '_channel'
+    Pusher[to_channel].trigger('new_message', {
+      message: new_message.message,
+      from: username,
+      created_at: new_message.created_at
+    })
+    from_channel = 'user' + id.to_s + '_channel'
+    Pusher[from_channel].trigger('new_message', {
+      message: new_message.message,
+      from: username,
+      created_at: new_message.created_at
+    })
+    msgchannel = 'user' + user_id.to_s + '_channel'
+    Pusher[msgchannel].trigger('new_conv', {
+      message: new_message.message,
+      from: username,
+      conv_id: conversation_id,
+      created_at: new_message.created_at
+    })
+  end
+
+  def create_new_conversation(user_id)
+    conversation = Conversation.new
+    if conversation.save
+      self.conversations << conversation
+      User.find(user_id).conversations << conversation
+      return conversation
+    else
+      return false
+    end
+  end
+
+  def show_all_conversations
+    conversations.where("user_conversations.deleted = false").order("last_message_at DESC")
+  end
+
+  def delete_conversation(conversation_id)
+    user_conversations.find_by_conversation_id(conversation_id).mark_delete
+  end
+
+
 
 end

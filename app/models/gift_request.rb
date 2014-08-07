@@ -15,10 +15,12 @@ class GiftRequest < ActiveRecord::Base
 
   after_save ThinkingSphinx::RealTime.callback_for(:gift_request)
 
+
   MAXIMUM_AMOUNT_OF_TAGS = 5
 
   after_create :create_notification
   before_destroy :destroy_notification
+  before_destroy :detach_tags_to_gift_request
 
   has_many :gift_request_black_list
   has_many :gift_request_white_list
@@ -38,6 +40,7 @@ class GiftRequest < ActiveRecord::Base
   def create_notification
     Notification.create_notification(self, "gift_request")
   end
+
   def destroy_notification
     Notification.destroy_notification(self, "gift_request")
   end
@@ -77,6 +80,12 @@ class GiftRequest < ActiveRecord::Base
     GiftRequest.order('views DESC')
   end
 
+  def detach_tags_to_gift_request
+    tags.each do |tag|
+      tag.decrement_gift_request_count
+    end
+  end
+
   def user_has_access?(user_id)
     if private_post
       # check if user is in white list & if their not in black list
@@ -85,7 +94,21 @@ class GiftRequest < ActiveRecord::Base
       else
         return false
       end
+    else
+      return true
     end
+  end
+
+  def subscribed_users
+    users = []
+    tags.each do |tag|
+      tag.users.each do |user|
+        unless users.include?(user)
+          users << user
+        end
+      end
+    end
+    return users
   end
 
 end

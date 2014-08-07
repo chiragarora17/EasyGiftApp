@@ -57,3 +57,33 @@
 [Fri Jul 25 23:21:47.679 2014] [ 3402] Child process 3403 has been forked
 [Fri Jul 25 23:21:47.679 2014] [ 3403] listening on 127.0.0.1:9306
 [Fri Jul 25 23:21:47.769 2014] [ 3403] accepting connections
+[Sat Jul 26 03:00:51.459 2014] [ 3403] caught SIGTERM, shutting down
+[Sat Jul 26 03:00:51.526 2014] [ 3403] shutdown complete
+[Sat Jul 26 16:01:54.408 2014] [ 4722] Child process 4723 has been forked
+[Sat Jul 26 16:01:54.409 2014] [ 4723] listening on 127.0.0.1:9306
+[Sat Jul 26 16:01:54.503 2014] [ 4723] accepting connections
+[Sat Jul 26 19:50:32.071 2014] [ 4723] caught SIGTERM, shutting down
+[Sat Jul 26 19:50:32.152 2014] [ 4723] shutdown complete
+[Sat Jul 26 22:39:00.571 2014] [ 4015] Child process 4016 has been forked
+[Sat Jul 26 22:39:00.572 2014] [ 4016] listening on 127.0.0.1:9306
+[Sat Jul 26 22:39:00.678 2014] [ 4016] accepting connections
+[Sun Jul 27 02:21:11.259 2014] [ 4016] caught SIGTERM, shutting down
+[Sun Jul 27 02:21:11.352 2014] [ 4016] shutdown complete
+[Mon Jul 28 04:13:24.418 2014] [11400] Child process 11401 has been forked
+[Mon Jul 28 04:13:24.418 2014] [11401] listening on 127.0.0.1:9306
+[Mon Jul 28 04:13:24.513 2014] [11401] accepting connections
+[Mon Jul 28 04:21:22.560 2014] [11401] caught SIGTERM, shutting down
+[Mon Jul 28 04:21:22.631 2014] [11401] shutdown complete
+[Sat Aug  2 14:28:50.484 2014] [ 3958] Child process 3959 has been forked
+[Sat Aug  2 14:28:50.484 2014] [ 3959] listening on 127.0.0.1:9306
+[Sat Aug  2 14:28:50.586 2014] [ 3959] accepting connections
+[Sat Aug  2 21:35:48.231 2014] [ 3959] caught SIGTERM, shutting down
+[Sat Aug  2 21:35:48.365 2014] [ 3959] shutdown complete
+[Sun Aug  3 19:55:03.654 2014] [ 4731] Child process 4732 has been forked
+[Sun Aug  3 19:55:03.654 2014] [ 4732] listening on 127.0.0.1:9306
+[Sun Aug  3 19:55:03.734 2014] [ 4732] accepting connections
+[Sun Aug  3 22:34:05.357 2014] [ 4732] caught SIGTERM, shutting down
+[Sun Aug  3 22:34:05.400 2014] [ 4732] shutdown complete
+[Thu Aug  7 04:47:43.403 2014] [15294] Child process 15295 has been forked
+[Thu Aug  7 04:47:43.403 2014] [15295] listening on 127.0.0.1:9306
+[Thu Aug  7 04:47:43.570 2014] [15295] accepting connections

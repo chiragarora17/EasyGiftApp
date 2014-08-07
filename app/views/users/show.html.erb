@@ -158,6 +158,11 @@ tr.border_bottom td {
 
         <button type="submit" class="btn btn-info btn-large " data-toggle="modal" data-target="#followermodal">Followers</button>
 
+        <br><br>
+        <% if current_user.id != @user.id %>
+        <button type="submit" class="btn btn-info btn-large " data-toggle="modal" data-target="#message_modal">Send Message</button>
+        <% end %>
+
       </div>
     </div>
   </div>
@@ -192,6 +197,7 @@ tr.border_bottom td {
 
       <% @activitymsg = @user.activityMessages(current_user) %>
       <% @activitymsg.each do |activity| %>
+      <% if activity["gift_request"].private_post==false || (activity["gift_request"].private_post==true &&  activity["gift_request"].user_has_access?(current_user.id)) %>
         <tr style="padding-bottom:40px"><td>
        <%= time_ago_in_words(activity["created_at"]) %>
       </td><td>
@@ -215,6 +221,9 @@ tr.border_bottom td {
        <%= link_to activity["message"], activity["url"], :style => "background:transparent;color:black;text-decoration: none" %>
      </td>
       </tr>
+      <% else %>
+      <% %>
+      <% end %>
       <% end %>
       </tbody>
     </table>
@@ -243,6 +252,7 @@ tr.border_bottom td {
             <% @populargifts = @gifts.sort_by(&:views).reverse %>
 
             <% @populargifts.each do |gift| %>
+            <% if gift.private_post==false || (gift.private_post==true &&  gift.user_has_access?(current_user.id)) %>
             <tr style="padding-bottom:40px"><td width="50px" align="center">
                 <div class="inline"><h4 class="inline">
                 <% @votes = (gift.like_count) - (gift.dislike_count) %>
@@ -281,9 +291,11 @@ tr.border_bottom td {
 
                 <% end %>
              </div>
+             <br><br><br><br>
 
           </td>
           </tr>
+          <% end %>
           <% end %>
           </tbody>
         </table>
@@ -299,6 +311,7 @@ tr.border_bottom td {
             <% @likegifts = @gifts.sort_by(&:like_count).reverse %>
 
             <% @likegifts.each do |gift| %>
+            <% if gift.private_post==false || (gift.private_post==true &&  gift.user_has_access?(current_user.id)) %>
             <tr style="padding-bottom:40px;"><td width="50px" align="center">
                 <div class="inline"><h4 class="inline">
                 <% @votes = (gift.like_count) - (gift.dislike_count) %>
@@ -337,9 +350,10 @@ tr.border_bottom td {
 
                 <% end %>
              </div>
-
+             <br><br><br><br>
           </td>
           </tr>
+          <% end %>
           <% end %>
           </tbody>
         </table>
@@ -355,6 +369,7 @@ tr.border_bottom td {
             <% @newgifts = @gifts.sort_by(&:created_at).reverse %>
 
             <% @newgifts.each do |gift| %>
+            <% if gift.private_post==false || (gift.private_post==true &&  gift.user_has_access?(current_user.id)) %>
             <tr style="padding-bottom:40px"><td width="50px" align="center">
                 <div class="inline"><h4 class="inline">
                 <% @votes = (gift.like_count) - (gift.dislike_count) %>
@@ -393,9 +408,10 @@ tr.border_bottom td {
 
                 <% end %>
              </div>
-
+             <br><br><br><br>
           </td>
           </tr>
+          <% end %>
           <% end %>
           </tbody>
         </table>
@@ -430,7 +446,6 @@ tr.border_bottom td {
             <tbody>
 
             <% @likecomments = @comments.sort_by(&:like_count).reverse %>
-
             <% @likecomments.each do |comment| %>
             <tr style="padding-bottom:40px;"><td width="50px" align="center">
                 <div class="inline"><h4 class="inline">
@@ -715,4 +730,22 @@ tr.border_bottom td {
         </div>
       </div>
     </div>
+
+<div class="modal fade" id="message_modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title">Say Hello!</h4>
+      </div>
+      <div class="modal-body">
+        <input id="send_message_from_user_page_submit_authenticity_token" name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" />
+        <textarea data-user-to='<%= @user.id %>' style='resize:none'rows="5" cols="50" name="gift_request[description]" class="form-control" id="send_message_from_user_page" placeholder="Enter a message"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button id="send_message_from_user_page_submit" type="button" class="btn btn-primary">Send</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 

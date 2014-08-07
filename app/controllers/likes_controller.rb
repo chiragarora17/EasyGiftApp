@@ -39,6 +39,39 @@ class LikesController < ApplicationController
 	    end
 	end
 
+	# def feedcreate
+	# 	@like = Like.new(params[:like])
+	# 	if @like.gift_request
+	# 		type = "gift_request"
+	# 		post_or_comment = @like.gift_request
+	# 		gift_request = @like.gift_request
+	# 	else
+	# 		type = "comment"
+	# 		post_or_comment = @like.comment
+	# 		gift_request = @like.comment_gift_request
+	# 	end
+	#       if current_user.id != post_or_comment.user.id && @like.save
+	#       		result = {}
+	#       		result[:like] = @like
+	#       		result[:status] = true	 
+	#       		render json: result
+	#       else
+	#       	# flash[:notice] = "Followed successfully."
+	#       	# redirect_to "/feed"
+	#       	# render json: "followjson"
+	# 			# if current_user.id == post_or_comment.user.id
+	# 			# 	@like.errors[:base ] << "Can't like your own comment or post"
+	# 			# end
+	#    #      		redirect_to "/feed", notice: @like.errors.full_messages.to_sentence
+	#         	 result = {}
+	#         	 result[:temp] = @like
+	#       		result[:like] = "Can't like your own comment or post"
+	#       		result[:status] = false	 
+	#       		render json: result
+	      
+	#     end
+	# end
+
 	def feedcreate
 		@like = Like.new(params[:like])
 		if @like.gift_request
@@ -63,9 +96,6 @@ class LikesController < ApplicationController
 	      		render json: result
 	      	}
 	      else
-	      	# flash[:notice] = "Followed successfully."
-	      	# redirect_to "/feed"
-	      	# render json: "followjson"
 	        format.html {
 				if current_user.id == post_or_comment.user.id
 					@like.errors[:base ] << "Can't like your own comment or post"
